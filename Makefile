@@ -237,9 +237,7 @@ endif
 
 HOST_LIBS=-lm -ldl -lpthread
 LIBS=-lm
-ifndef CONFIG_WIN32
 LIBS+=-ldl -lpthread
-endif
 LIBS+=$(EXTRA_LIBS)
 
 $(OBJDIR):
