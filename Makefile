@@ -376,6 +376,7 @@ clean:
 	rm -rf $(OBJDIR)/ *.dSYM/ qjs-debug
 	rm -rf run-test262-debug run-test262-32
 	rm -f run_octane run_sunspider_like
+	rm -f *.so *.dll *.dylib *.exe
 
 install: all
 	mkdir -p "$(DESTDIR)$(PREFIX)/bin"
@@ -584,5 +585,24 @@ benchmarks: run_sunspider_like run_octane
 	./run_sunspider_like $(BENCHMARKDIR)/kraken-1.1/
 	./run_sunspider_like $(BENCHMARKDIR)/sunspider-1.0/
 	./run_octane $(BENCHMARKDIR)/
+
+SO=.so
+
+ifeq ($(OS),Windows_NT)
+	SO=.dll
+	LDFLAGS+=-Wl,--out-implib=libquickjs$(SO).a
+else
+	ifeq ($(shell uname -s),Darwin)
+		SO=.dylib
+	endif
+endif
+
+three_box_libquickjs: $(QJS_LIB_OBJS)
+	$(CC) $(LDFLAGS) -shared -fPIC -o libquickjs$(SO) $(LIBS) $^
+
+three_box_qjs: $(OBJDIR)/qjs.o $(OBJDIR)/qjscalc.o $(OBJDIR)/repl.o
+	$(CC) -o qjs$(EXE) -L. -lquickjs $^
+
+three_box: three_box_libquickjs|three_box_qjs
 
 -include $(wildcard $(OBJDIR)/*.d)
