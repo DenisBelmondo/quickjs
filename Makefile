@@ -603,6 +603,6 @@ three_box_libquickjs: $(QJS_LIB_OBJS)
 three_box_qjs: $(OBJDIR)/qjs.o $(OBJDIR)/qjscalc.o $(OBJDIR)/repl.o
 	$(CC) -o qjs$(EXE) -L. -lquickjs $^
 
-three_box: three_box_libquickjs|three_box_qjs
+# three_box: three_box_libquickjs|three_box_qjs
 
 -include $(wildcard $(OBJDIR)/*.d)
